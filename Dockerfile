@@ -44,8 +44,12 @@ RUN aria2c https://github.com/ogham/exa/releases/download/v0.9.0/exa-linux-x86_6
  echo "alias ls=\"exa\"" >> ~/.bashrc
 
 RUN curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-RUN apt-get install -y gcc g++ make nodejs
+RUN apt-get install -y gcc g++ make nodejs haproxy runit telnet
 
-USER coder
+COPY ./configs/haproxy.cfg /etc/haproxy/haproxy.cfg
+
+COPY ./entrypoint.sh /entrypoint.sh
+
+USER root
 EXPOSE 8080
-ENTRYPOINT ["dumb-init", "code-server", "--host", "0.0.0.0"]
+ENTRYPOINT ["dumb-init", "/entrypoint.sh"]
