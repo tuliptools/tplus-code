@@ -40,13 +40,16 @@ RUN apt-get update && \
  yes | apt-get install -y htop aria2 wget curl git pydf mtr ack-grep nano unzip
 RUN aria2c https://github.com/ogham/exa/releases/download/v0.9.0/exa-linux-x86_64-0.9.0.zip && \
  unzip exa-linux-x86_64-0.9.0.zip && \
- cp exa-linux-x86_64 /usr/local/bin/exa && rm * && \
- echo "alias ls=\"exa\"" >> ~/.bashrc
+ cp exa-linux-x86_64 /usr/local/bin/exa && rm *
 
 RUN curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-RUN apt-get install -y gcc g++ make nodejs haproxy runit telnet
+RUN apt-get install -y gcc g++ make nodejs haproxy runit telnet inetutils-ping
+RUN echo "http\t80/tcp\twww\t# WorldWideWeb HTTP" > /etc/services
+RUN curl -s https://SmartPy.io/SmartPyBasic/SmartPy.sh > SmartPy.sh && chmod +x ./SmartPy.sh && ./SmartPy.sh local-install / && rm SmartPy.sh
 
 COPY ./configs/haproxy.cfg /etc/haproxy/haproxy.cfg
+COPY ./configs/bash /home/coder/.bashrc
+COPY ./configs/bash /root/.bashrc
 
 COPY ./entrypoint.sh /entrypoint.sh
 
